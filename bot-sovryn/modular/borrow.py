@@ -1,5 +1,6 @@
 import requests
 import math
+from utils import database
 
 class borrow :
     def __init__(self, api_key, starting_block) :
@@ -50,5 +51,9 @@ class borrow :
                     _data_to_sent['borrow_token'] = self.tokens[i['decoded']['params'][2]['value'].lower()]
                     _data_to_sent['borrow_amount'] = int(i['decoded']['params'][5]['value'])/math.pow(10,18)
                     _data_to_sent['borrow_amount_in_usd'] = _data_to_sent['borrow_amount'] if _data_to_sent['borrow_token'] == 'DoC' or _data_to_sent['borrow_token'] == 'XUSD' else _data_to_sent['collateral_amount']
+                    _d = database.database()
+                    _stat = _d.insert_borrow_transaction(_data_to_sent)
+                    if _stat == 0 :
+                        return self.starting_block
                 print(_data_to_sent)
             return self.starting_block + 500 

@@ -34,3 +34,33 @@ class database :
         else :
             conn.close()
             return 1
+    
+    def insert_lending_transaction(self, data) :
+        conn = self.mysqlconnect()
+        _query = "INSERT IGNORE INTO `lending` (`tx_hash`, `date`, `block`, `ticker_symbol`, `type`, `trader`, `asset_amount`, `total`, `total_gas`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cur = conn.cursor()
+        try :
+            cur.execute(_query,(data['tx_hash'], data['date'], data['block'], data['ticker_symbol'], data['type'], data['trader'], data['asset_amount'], data['total'], data['total_gas']))
+            conn.commit()
+        except Exception as e :
+            print(e)
+            conn.close()
+            return 0
+        else :
+            conn.close()
+            return 1
+        
+    def insert_borrow_transaction(self, data) :
+        conn = self.mysqlconnect()
+        _query = "INSERT IGNORE INTO `borrowing` (`tx_hash`, `trader`, `block`, `date`, `collateral_token`, `collateral_amount`, `borrow_token`, `borrow_amount`, `borrow_amount_in_usd`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cur = conn.cursor()
+        try :
+            cur.execute(_query,(data['tx_hash'], data['trader'], data['block'], data['date'], data['collateral_token'], data['collateral_amount'], data['borrow_token'], data['borrow_amount'], data['borrow_amount_in_usd']))
+            conn.commit()
+        except Exception as e :
+            print(e)
+            conn.close()
+            return 0
+        else :
+            conn.close()
+            return 1
