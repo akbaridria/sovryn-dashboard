@@ -7,7 +7,7 @@ class borrow :
         self.api_key = api_key
         self.tokens = {
             '0xe700691da7b9851f2f35f8b8182c69c53ccad9db'.lower() : 'DoC',
-            '0xb5999795BE0EbB5bAb23144AA5F D6A02D080299F'.lower() : 'XUSD',
+            '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F'.lower() : 'XUSD',
             '0xEf213441a85DF4d7acBdAe0Cf78004E1e486BB96'.lower() : 'RUSDT',
             '0x6D9659bdF5b1A1dA217f7BbAf7dBAF8190E2e71B'.lower() : 'BNBs',
             '0x1D931Bf8656d795E50eF6D639562C5bD8Ac2B78f'.lower() : 'ETHs',
@@ -19,7 +19,7 @@ class borrow :
         self.token_borrow = {
             "0x542fDA317318eBF1d3DEAf76E0b632741A7e677d".lower() : 'RBTC',
             '0xe700691da7b9851f2f35f8b8182c69c53ccad9db'.lower() : 'DoC',
-            '0xb5999795BE0EbB5bAb23144AA5F D6A02D080299F'.lower() : 'XUSD'
+            '0xb5999795BE0EbB5bAb23144AA5FD6A02D080299F'.lower() : 'XUSD'
         }
         self.base_url_covalent_api = 'https://api.covalenthq.com/v1/'
         self.base_url_coingecko_api = 'https://api.coingecko.com/api/v3/'
