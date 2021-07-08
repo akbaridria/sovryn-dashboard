@@ -13,6 +13,8 @@ import {
   Link
 } from "react-router-dom";
 import Swap from './screen/Swap';
+import Lending from './screen/Lending';
+import Borrowing from './screen/Borrow';
 
 
 function App() {
@@ -54,17 +56,17 @@ function SwapScreen() {
 
 function LendingScreen() {
   return (
-    <div>
-      <h2>About</h2>
-    </div>
+    <>
+      <Lending />
+    </>
   );
 }
 
 function BorrowScreen() {
   return (
-    <div>
-      <h2>Dashboard</h2>
-    </div>
+    <>
+     <Borrowing />
+    </>
   );
 }
 
