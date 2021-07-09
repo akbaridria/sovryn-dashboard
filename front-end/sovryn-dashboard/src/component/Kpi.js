@@ -3,12 +3,12 @@ import {
     Heading
 } from "@chakra-ui/react"
 
-const Kpi = () => {
+const Kpi = ({title}) => {
     return (
         <Box width={300} height={75} border="1px" borderColor="gray.200" p={3} boxShadow="lg" rounded="md" bg="white" >
             <center>
                <Heading as="h4" size="md" m={0}>
-                    The Largest Swap
+                    {title}
                 </Heading>
                 <Heading as="h3" size="lg" m={0} mt={3} color="teal">
                     $ 10,000,000.00

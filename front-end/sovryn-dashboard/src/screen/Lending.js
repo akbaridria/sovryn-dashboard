@@ -14,10 +14,10 @@ const Lending = () => {
         <Flex align="center" justifyContent="center" flexDir="column">
            <Search />
            <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
-                <Kpi />
-                <Kpi />
-                <Kpi />
-                <Kpi />
+                <Kpi title="Total Minted Volume" />
+                <Kpi title="Total Burned Volume" />
+                <Kpi title="Total Unique User Minted" />
+                <Kpi title="Total Unique User Burned" />
             </Stack>
             <Box w={1000} h={400} mb={10} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
                 <center>

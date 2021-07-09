@@ -21,10 +21,10 @@ const Swap = () => {
         <Flex align="center" justifyContent="center" flexDir="column">
             <Search />
             <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
-                <Kpi />
-                <Kpi />
-                <Kpi />
-                <Kpi />
+                <Kpi title="The Largest Swap" />
+                <Kpi title="Total Trade Volume" />
+                <Kpi title="Total Unique User"/>
+                <Kpi title="Total Swap" />
             </Stack>
             <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
                 <Box w={400} h={400} boxShadow="lg" rounded="md" bg="white" border="1px" borderColor="gray.200" align="center">
