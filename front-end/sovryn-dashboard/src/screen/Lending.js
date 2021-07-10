@@ -11,7 +11,7 @@ import Chart from "../component/Chart"
 
 const Lending = () => {
     return (
-        <Flex align="center" justifyContent="center" flexDir="column">
+        <Flex align="center" justifyContent="center" flexDir="column" mt={40}>
            <Search />
            <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
                 <Kpi title="Total Minted Volume" />

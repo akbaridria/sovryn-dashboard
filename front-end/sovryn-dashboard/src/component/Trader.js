@@ -5,29 +5,38 @@ import {
     useClipboard,
     Button,
     Badge,
-    Heading
+    Heading,
+    InputGroup,
+    InputRightElement
 } from "@chakra-ui/react"
-import React from "react";
+import React, { useEffect } from "react";
 
-const Trader = () => {
+const Trader = ({data}) => {
 
-    const [value, setValue] = React.useState("0xf36c7f8706fD618BD280cE706b327C268be2f368")
+    const [value, setValue] = React.useState("")
     const { hasCopied, onCopy } = useClipboard(value)
-
+    useEffect(() => {
+        setValue(data.trader)
+    })
     return (
-        <Flex m={3}>
-            <Box bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" w={330} h={100} p={2}>
-            <Flex mb={2}>
-                <Input value={value} isReadOnly placeholder="Welcome" size="sm"/>
-                <Button onClick={onCopy} ml={2} size="sm">
+        <Flex mb={3}>
+            <Box bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" w={330} h={70} p={2}>
+            <Flex mb={1}>
+                <InputGroup size="md" alignItems="center">
+                <Input
+                    value={value} isReadOnly placeholder="Welcome" size="sm" pr="4.5rem" variant="filled"
+                />
+                <InputRightElement width="4.5rem">
+                <Button onClick={onCopy} ml={2} size="xs">
                 {hasCopied ? "Copied" : "Copy"}
                 </Button>
+                </InputRightElement>
+                </InputGroup>                
             </Flex>
-            <Badge colorScheme="teal" >Total Trade Volume</Badge>
-            <Flex flexDir="column">
-                
+            <Flex flexDir="row" align="center" justifyContent="space-between">
+            <Badge colorScheme="teal" variant="solid" >Total Trade Volume</Badge>
                 <Heading fontSize="14" isTruncated>
-                    $ 100.000.000,00
+                    $ {Number((data.volume).toFixed(2)).toLocaleString()}
                 </Heading>
             </Flex>
             

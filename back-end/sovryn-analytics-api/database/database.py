@@ -191,7 +191,71 @@ class database :
         elif from_date != 0 and wallet != 0 :
             query_sql = "SELECT SUM(total) AS total, type, COUNT(DISTINCT(trader)) AS user from lending  WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY type"
         print(query_sql)
-        
         cur.execute(query_sql)
         _d = cur.fetchall()
         return _d
+    
+    def get_total_mint_burn(self, from_date=0, to_date=0, wallet=0) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        if from_date == 0 and wallet == 0 :
+            query_sql = "SELECT date, sum( if( type = 'Mint', total, 0 ) ) AS Mint, sum( if( type = 'Burn', total, 0 ) ) AS Burn FROM lending as T1 GROUP BY T1.date"
+        elif from_date != 0 and wallet == 0 :
+            query_sql = "SELECT date, sum( if( type = 'Mint', total, 0 ) ) AS Mint, sum( if( type = 'Burn', total, 0 ) ) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY T1.date"
+        elif from_date !=0 and wallet != 0 :
+            query_sql = "SELECT date, sum( if( type = 'Mint', total, 0 ) ) AS Mint, sum( if( type = 'Burn', total, 0 ) ) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY T1.date"
+        cur.execute(query_sql)
+        _r = cur.fetchall()
+        return _r
+    
+    def get_user_mint_burn(self, from_date=0, to_date=0, wallet=0) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        if from_date == 0 and wallet == 0 :
+            query_sql = "SELECT date, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Mint' AND date=T1.date) AS Mint, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Burn' AND date=T1.date) AS Burn FROM lending as T1 GROUP BY T1.date"
+        elif from_date != 0 and wallet == 0 :
+            query_sql = "SELECT date, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Mint' AND date=T1.date) AS Mint, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Burn' AND date=T1.date) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY T1.date"
+        elif from_date !=0 and wallet != 0 :
+            query_sql = "SELECT date, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Mint' AND date=T1.date) AS Mint, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Burn' AND date=T1.date) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY T1.date"
+        cur.execute(query_sql)
+        _r = cur.fetchall()
+        return _r
+
+    def get_kpi_borrowing(self, from_date=0, to_date=0, wallet=0) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        if from_date == 0 and wallet == 0 :
+            query_sql = "SELECT sum(borrow_amount_in_usd) AS borrow, COUNT(DISTINCT(trader)) AS user, COUNT(tx_hash) AS transactions FROM `borrowing`"
+        elif from_date != 0 and wallet == 0 :
+            query_sql = "SELECT sum(borrow_amount_in_usd) AS borrow, COUNT(DISTINCT(trader)) AS user, COUNT(tx_hash) AS transactions FROM `borrowing` WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "'"
+        elif from_date !=0 and wallet != 0 :
+            query_sql = "SELECT sum(borrow_amount_in_usd) AS borrow, COUNT(DISTINCT(trader)) AS user, COUNT(tx_hash) AS transactions FROM `borrowing` WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "'"
+        cur.execute(query_sql)
+        _r = cur.fetchone()
+        return _r
+    
+    def get_total_borrow_date(self, from_date=0, to_date=0, wallet=0) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        if from_date == 0 and wallet == 0 :
+            query_sql = "SELECT date, SUM(borrow_amount_in_usd) AS total FROM borrowing GROUP BY date"
+        elif from_date != 0 and wallet == 0 :
+            query_sql = "SELECT date, SUM(borrow_amount_in_usd) AS total FROM borrowing WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY date"
+        elif from_date !=0 and wallet != 0 :
+            query_sql = "SELECT date, SUM(borrow_amount_in_usd) AS total FROM borrowing WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY date"
+        cur.execute(query_sql)
+        _r = cur.fetchall()
+        return _r
+
+    def get_total_user_borrow(self, from_date=0, to_date=0, wallet=0) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        if from_date == 0 and wallet == 0 :
+            query_sql = "SELECT date, COUNT(DISTINCT(trader)) AS total FROM borrowing GROUP BY date"
+        elif from_date != 0 and wallet == 0 :
+            query_sql = "SELECT date, COUNT(DISTINCT(trader)) AS total FROM borrowing WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY date"
+        elif from_date !=0 and wallet != 0 :
+            query_sql = "SELECT date, COUNT(DISTINCT(trader)) AS total FROM borrowing WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY date"
+        cur.execute(query_sql)
+        _r = cur.fetchall()
+        return _r

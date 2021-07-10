@@ -3,7 +3,7 @@ import {
     Heading
 } from "@chakra-ui/react"
 
-const Kpi = ({title}) => {
+const Kpi = ({title, total, symbol}) => {
     return (
         <Box width={300} height={75} border="1px" borderColor="gray.200" p={3} boxShadow="lg" rounded="md" bg="white" >
             <center>
@@ -11,7 +11,7 @@ const Kpi = ({title}) => {
                     {title}
                 </Heading>
                 <Heading as="h3" size="lg" m={0} mt={3} color="teal">
-                    $ 10,000,000.00
+                    {symbol + Number((total).toFixed(0)).toLocaleString()}
                 </Heading>
             </center>
         </Box>

@@ -23,6 +23,7 @@ def get_kpi_swap():
         _largest_swap = _d.get_the_largest_swap()
         return jsonify(_largest_swap)
 
+
 @app.route('/api/get_swap_distribution', methods=['GET'])
 @cross_origin()
 def get_swap_distribution() :
@@ -50,6 +51,7 @@ def get_swap_distribution() :
         _r4 = _d.get_rbtc_sov()
         return jsonify([_r1, _r2, _r3, _r4])
 
+
 @app.route('/api/get_total_swap', methods=['GET'])
 @cross_origin()
 def get_total_swap() :
@@ -66,6 +68,7 @@ def get_total_swap() :
     else :
         _largest_swap = _d.get_total_swap()
         return jsonify(_largest_swap)
+
 
 @app.route('/api/get_swap_month', methods=['GET'])
 @cross_origin()
@@ -84,6 +87,7 @@ def get_swap_month() :
         _largest_swap = _d.get_swap_month()
         return jsonify(_largest_swap)
 
+
 @app.route('/api/get_swap_user', methods=['GET'])
 @cross_origin()
 def get_swap_user() :
@@ -100,6 +104,7 @@ def get_swap_user() :
     else :
         _largest_swap = _d.get_swap_user()
         return jsonify(_largest_swap)
+
 
 @app.route('/api/get_swap_user_month', methods=['GET'])
 @cross_origin()
@@ -118,6 +123,7 @@ def get_swap_user_month() :
         _largest_swap = _d.get_swap_user_month()
         return jsonify(_largest_swap)
 
+
 @app.route('/api/get_spent_gas_date', methods=['GET'])
 @cross_origin()
 def get_spent_gas_date() :
@@ -134,6 +140,7 @@ def get_spent_gas_date() :
     else :
         _largest_swap = _d.get_spent_gas_date()
         return jsonify(_largest_swap)
+
 
 @app.route('/api/get_spent_gas_month', methods=['GET'])
 @cross_origin()
@@ -152,6 +159,7 @@ def get_spent_gas_month() :
         _largest_swap = _d.get_spent_gas_month()
         return jsonify(_largest_swap)
 
+
 @app.route('/api/top_trader', methods=['GET'])
 @cross_origin()
 def top_trader() :
@@ -168,6 +176,7 @@ def top_trader() :
     else :
         _largest_swap = _d.top_trader()
         return jsonify(_largest_swap)
+
 
 @app.route('/api/get_kpi_lending', methods=['GET'])
 @cross_origin()
@@ -186,6 +195,95 @@ def get_kpi_lending():
         _largest_swap = _d.get_kpi_lending()
         return jsonify(_largest_swap)
 
+
+@app.route('/api/get_mint_burn', methods=['GET'])
+@cross_origin()
+def get_mint_burn():
+    _d = database()
+    _result = {}
+    if request.args :
+        _args = request.args
+        if "wallet" not in _args :
+            _largest_swap = _d.get_total_mint_burn(_args["from_date"], _args["to_date"])
+            return jsonify(_largest_swap)
+        else :
+            _largest_swap = _d.get_total_mint_burn(_args["from_date"], _args["to_date"], _args["wallet"])
+            return jsonify(_largest_swap)
+    else :
+        _largest_swap = _d.get_total_mint_burn()
+        return jsonify(_largest_swap)
+
+
+@app.route('/api/get_user_mint_burn', methods=['GET'])
+@cross_origin()
+def get_user_mint_burn():
+    _d = database()
+    _result = {}
+    if request.args :
+        _args = request.args
+        if "wallet" not in _args :
+            _largest_swap = _d.get_user_mint_burn(_args["from_date"], _args["to_date"])
+            return jsonify(_largest_swap)
+        else :
+            _largest_swap = _d.get_user_mint_burn(_args["from_date"], _args["to_date"], _args["wallet"])
+            return jsonify(_largest_swap)
+    else :
+        _largest_swap = _d.get_user_mint_burn()
+        return jsonify(_largest_swap)
+
+
+@app.route('/api/get_kpi_borrowing', methods=['GET'])
+@cross_origin()
+def get_kpi_borrowing():
+    _d = database()
+    _result = {}
+    if request.args :
+        _args = request.args
+        if "wallet" not in _args :
+            _largest_swap = _d.get_kpi_borrowing(_args["from_date"], _args["to_date"])
+            return jsonify(_largest_swap)
+        else :
+            _largest_swap = _d.get_kpi_borrowing(_args["from_date"], _args["to_date"], _args["wallet"])
+            return jsonify(_largest_swap)
+    else :
+        _largest_swap = _d.get_kpi_borrowing()
+        return jsonify(_largest_swap)
+
+
+@app.route('/api/get_total_borrow_date', methods=['GET'])
+@cross_origin()
+def get_total_borrow_date():
+    _d = database()
+    _result = {}
+    if request.args :
+        _args = request.args
+        if "wallet" not in _args :
+            _largest_swap = _d.get_total_borrow_date(_args["from_date"], _args["to_date"])
+            return jsonify(_largest_swap)
+        else :
+            _largest_swap = _d.get_total_borrow_date(_args["from_date"], _args["to_date"], _args["wallet"])
+            return jsonify(_largest_swap)
+    else :
+        _largest_swap = _d.get_total_borrow_date()
+        return jsonify(_largest_swap)
+
+
+@app.route('/api/get_total_user_borrow', methods=['GET'])
+@cross_origin()
+def get_total_user_borrow():
+    _d = database()
+    _result = {}
+    if request.args :
+        _args = request.args
+        if "wallet" not in _args :
+            _largest_swap = _d.get_total_user_borrow(_args["from_date"], _args["to_date"])
+            return jsonify(_largest_swap)
+        else :
+            _largest_swap = _d.get_total_user_borrow(_args["from_date"], _args["to_date"], _args["wallet"])
+            return jsonify(_largest_swap)
+    else :
+        _largest_swap = _d.get_total_user_borrow()
+        return jsonify(_largest_swap)
 
 
 if __name__ == '__main__':
