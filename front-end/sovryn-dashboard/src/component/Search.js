@@ -13,7 +13,6 @@ const Search = () => {
                 <Input variant="filled" type="date"/>
                 <span>To</span>
                 <Input variant="filled" type="date" />
-                <Input variant="filled" placeholder="Wallet Address" />
                 <Button colorScheme="teal" variant="solid" w={200}>
                     <Search2Icon />
                 </Button>
