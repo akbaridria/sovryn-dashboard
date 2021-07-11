@@ -12,7 +12,8 @@ import {
     AlertIcon,
     Badge,
     AlertTitle,
-    AlertDescription
+    AlertDescription,
+    Spinner
 } from "@chakra-ui/react"
 import Kpi from "../component/Kpi";
 import Pie from "../component/PoolDistribution";
@@ -37,7 +38,7 @@ const Swap = () => {
     const [dataGasDate, setDataGasDate] = React.useState([])
     const [dataGasMonth, setDataGasMonth] = React.useState([])
     const [topTraders, setTopTraders] = React.useState([])
-
+    const [isLoading, setIsLoding] = React.useState(false)
 
     React.useEffect(() => {
         get_data_swap();
@@ -114,6 +115,7 @@ const Swap = () => {
         return tempData
     }
     async function get_data_swap(paramFilter='') {
+        setIsLoding(true)
         const url_kpi = axios.get("https://api-sovryn.akbaridria.com/api/get_kpi_swap" + paramFilter)
         const url_distribution = axios.get("https://api-sovryn.akbaridria.com/api/get_swap_distribution" + paramFilter)
         const url_total_swap_date = axios.get("https://api-sovryn.akbaridria.com/api/get_total_swap" + paramFilter)
@@ -143,18 +145,26 @@ const Swap = () => {
             setDataSwapMonth(changeForRechart(rawDataSwapMonth))
             setDataSwapDate(getLast7Days(rawDataSwapDate))
             setDataPie(processDataPool(dataPool))
-            setLargestSwap(data_kpi.data.largest_swap)
-            setTradeVolume(data_kpi.data.total_volume)
+            data_kpi.data.largest_swap ? setLargestSwap(data_kpi.data.largest_swap) : setLargestSwap(0)
+            data_kpi.data.total_volume ? setTradeVolume(data_kpi.data.total_volume) : setTradeVolume(0)
             setTotalUser(data_kpi.data.total_unique)
-            setTotalSwap(data_kpi.data.total_transaction)
+            data_kpi.data.total_transaction ? setTotalSwap(data_kpi.data.total_transaction) : setTotalSwap(0)
         }).catch((error) => {
             console.log(error)
         })
+
+        setIsLoding(false)
+    }
+
+    function searchDataSwap(val1, val2) {
+        let paramUrl = "?from_date=" + val1 + "&to_date=" + val2
+        console.log(paramUrl)
+        get_data_swap(paramUrl)
     }
 
     return (
         <Flex align="center" justifyContent="center" flexDir="column" mt={40}>
-            <Search />
+            <Search searchData={searchDataSwap} />
             <Alert status="success" width={1380} variant="left-accent">
             <AlertIcon />
             <Box flex="1">
@@ -169,106 +179,124 @@ const Swap = () => {
                 </AlertDescription>   
             </Alert>
             
-            <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
-                <Kpi title="The Largest Swap" total={largestSwap} symbol="$" />
-                <Kpi title="Total Trade Volume" total={tradeVolume} symbol="$" />
-                <Kpi title="Total Unique User" total={totalUser} symbol="" />
-                <Kpi title="Total Swap" total={totalSwap} symbol="" />
-            </Stack>
-            <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
-                <Box w={400} h={400} boxShadow="lg" rounded="md" bg="white" border="1px" borderColor="gray.200" align="center">
-                    <center>
-                    <Heading as="h4" size="md" m={0} mt={5}>
-                        Pool Distribution By Trade Volume
-                    </Heading>
-                    </center>
-                    <Pie data={dataPie}/>
-                </Box>
-                <Box w={1000} h={400} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
-                    <center>
-                    <Heading as="h4" size="md" m={0} mb={5} mt={5}>
-                        Total Swap By Volume
-                    </Heading>
-                    </center>
-                    <Tabs variant="solid-rounded" colorScheme="teal" m={2}>
-                    <TabList  m={4}>
-                        <Tab>By Date</Tab>
-                        <Tab>By Month</Tab>
-                    </TabList>
-                    <TabPanels>
-                        <TabPanel>
-                        <ChartLight data={dataSwapDate} />
-                        </TabPanel>
-                        <TabPanel>
-                        <Chart data={dataSwapMonth} />
-                        </TabPanel>
-                    </TabPanels>
-                    </Tabs>
-                </Box>
-            </Stack>
-            <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
-                <Flex flexDir="column">
-                    <Box w={1000} h={400} mb={10} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
-                        <center>
-                            <Heading as="h4" size="md" m={0} mb={5} mt={5}>
-                                Total Unique User
+            {
+                isLoading ? (
+                    <Spinner
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                        color="teal.500"
+                        size="xl"
+                        m={20}
+                    />
+                ) : (
+                    <>
+                    <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
+                        <Kpi title="The Largest Swap" total={largestSwap} symbol="$" />
+                        <Kpi title="Total Trade Volume" total={tradeVolume} symbol="$" />
+                        <Kpi title="Total Unique User" total={totalUser} symbol="" />
+                        <Kpi title="Total Swap" total={totalSwap} symbol="" />
+                    </Stack>
+                    <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
+                        <Box w={400} h={400} boxShadow="lg" rounded="md" bg="white" border="1px" borderColor="gray.200" align="center">
+                            <center>
+                            <Heading as="h4" size="md" m={0} mt={5}>
+                                Pool Distribution By Trade Volume
                             </Heading>
-                        </center>
-                        <Tabs variant="solid-rounded" colorScheme="teal" m={2}>
+                            </center>
+                            <Pie data={dataPie}/>
+                        </Box>
+                        <Box w={1000} h={400} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
+                            <center>
+                            <Heading as="h4" size="md" m={0} mb={5} mt={5}>
+                                Total Swap By Volume
+                            </Heading>
+                            </center>
+                            <Tabs variant="solid-rounded" colorScheme="teal" m={2}>
                             <TabList  m={4}>
                                 <Tab>By Date</Tab>
                                 <Tab>By Month</Tab>
                             </TabList>
                             <TabPanels>
                                 <TabPanel>
-                                <Chart data = {dataUserDate} />
+                                <ChartLight data={dataSwapDate} />
                                 </TabPanel>
                                 <TabPanel>
-                                <Chart data = {dataUserMonth} />
+                                <Chart data={dataSwapMonth} />
                                 </TabPanel>
                             </TabPanels>
-                        </Tabs>
-                    </Box>
-                    <Box w={1000} h={400} mb={10} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
-                        <center>
-                            <Heading as="h4" size="md" m={0} mb={5} mt={5}>
-                                Total Gas Spent in USD
+                            </Tabs>
+                        </Box>
+                    </Stack>
+                    <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
+                        <Flex flexDir="column">
+                            <Box w={1000} h={400} mb={10} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
+                                <center>
+                                    <Heading as="h4" size="md" m={0} mb={5} mt={5}>
+                                        Total Unique User
+                                    </Heading>
+                                </center>
+                                <Tabs variant="solid-rounded" colorScheme="teal" m={2}>
+                                    <TabList  m={4}>
+                                        <Tab>By Date</Tab>
+                                        <Tab>By Month</Tab>
+                                    </TabList>
+                                    <TabPanels>
+                                        <TabPanel>
+                                        <Chart data = {dataUserDate} />
+                                        </TabPanel>
+                                        <TabPanel>
+                                        <Chart data = {dataUserMonth} />
+                                        </TabPanel>
+                                    </TabPanels>
+                                </Tabs>
+                            </Box>
+                            <Box w={1000} h={400} mb={10} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
+                                <center>
+                                    <Heading as="h4" size="md" m={0} mb={5} mt={5}>
+                                        Total Gas Spent in USD
+                                    </Heading>
+                                </center>
+                                <Tabs variant="solid-rounded" colorScheme="teal" m={2}>
+                                    <TabList  m={4}>
+                                        <Tab>By Date</Tab>
+                                        <Tab>By Month</Tab>
+                                    </TabList>
+                                    <TabPanels>
+                                        <TabPanel>
+                                        <Chart data={dataGasDate} />
+                                        </TabPanel>
+                                        <TabPanel>
+                                        <Chart data={dataGasMonth} />
+                                        </TabPanel>
+                                    </TabPanels>
+                                </Tabs>
+                            </Box>
+                        </Flex>
+                        <Box w={400} h={800} boxShadow="lg" rounded="md" bg="white" border="1px" borderColor="gray.200" align="center" overflow="auto" > 
+                            <center>
+                            <Heading as="h4" size="md" m={0} mt={5}>
+                                Top 10 Trader By Volume
                             </Heading>
-                        </center>
-                        <Tabs variant="solid-rounded" colorScheme="teal" m={2}>
-                            <TabList  m={4}>
-                                <Tab>By Date</Tab>
-                                <Tab>By Month</Tab>
-                            </TabList>
-                            <TabPanels>
-                                <TabPanel>
-                                <Chart data={dataGasDate} />
-                                </TabPanel>
-                                <TabPanel>
-                                <Chart data={dataGasMonth} />
-                                </TabPanel>
-                            </TabPanels>
-                        </Tabs>
-                    </Box>
-                </Flex>
-                <Box w={400} h={800} boxShadow="lg" rounded="md" bg="white" border="1px" borderColor="gray.200" align="center" overflow="auto" > 
-                    <center>
-                    <Heading as="h4" size="md" m={0} mt={5}>
-                        Top 10 Trader By Volume
-                    </Heading>
-                    </center>
-                    <Flex flexDir="column" align="center" m={5}>
-                        {
-                            topTraders.map((val) => {
-                                return <Trader data={val} />
-                            })
-                        }
-                        
-                    </Flex>
-                    
-                    
-                </Box>
-            </Stack>
+                            </center>
+                            <Flex flexDir="column" align="center" m={5}>
+                                {
+                                    topTraders.map((val) => {
+                                        return <Trader data={val} />
+                                    })
+                                }
+                                
+                            </Flex>
+                            
+                            
+                        </Box>
+                    </Stack>
+                    </>
+                )
+            
+            
+            }
+            
             
         </Flex>
         

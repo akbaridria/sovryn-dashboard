@@ -8,7 +8,8 @@ import {
     Badge,
     AlertTitle,
     AlertDescription,
-    AlertIcon
+    AlertIcon,
+    Spinner
 } from "@chakra-ui/react"
 import Kpi from "../component/Kpi"
 import Chart from "../component/Chart"
@@ -24,8 +25,10 @@ const Lending = () => {
     const [totalUserBurned, setTotalUserBurned] = React.useState(0);
     const [mintBurnDateVolume, setMintBurnDateVolume] = React.useState([])
     const [mintBurnDateUser, setMintBurnDateUser] = React.useState([])
+    const [isLoading, setIsLoading] = React.useState(false)
 
     async function getDataLending(paramFilter=""){
+        setIsLoading(true)
         const urlKpiLending = axios.get("https://api-sovryn.akbaridria.com/api/get_kpi_lending" + paramFilter)
         const urlMintBurnVolume = axios.get("https://api-sovryn.akbaridria.com/api/get_mint_burn" + paramFilter)
         const urlMintBurnUser = axios.get("https://api-sovryn.akbaridria.com/api/get_user_mint_burn" + paramFilter)
@@ -34,13 +37,15 @@ const Lending = () => {
             const rawMintBurnVol = responses[0][1]
             const rawMintBurnUs = responses[0][2]
             console.log(responses)
-            setTotalMinted(rawKPI.data[1].total)
-            setTotalBurned(rawKPI.data[0].total)
-            setTotalUserBurned(rawKPI.data[0].user)
-            setTotalUserMinted(rawKPI.data[1].user)
+            rawKPI === [] ? setTotalMinted(rawKPI.data[1].total) : setTotalMinted(0)
+            rawKPI === [] ? setTotalBurned(rawKPI.data[0].total) : setTotalBurned(0)
+            rawKPI === [] ? setTotalUserBurned(rawKPI.data[0].user) : setTotalUserBurned(0)
+            rawKPI === [] ? setTotalUserMinted(rawKPI.data[1].user) : setTotalUserMinted(0)
             setMintBurnDateVolume(rawMintBurnVol.data)
             setMintBurnDateUser(rawMintBurnUs.data)
         })
+
+        setIsLoading(false)
         
     }
 
@@ -48,9 +53,15 @@ const Lending = () => {
         getDataLending();
     }, [])
 
+    function searchDataLending(val1, val2) {
+        let paramUrl = "?from_date=" + val1 + "&to_date=" + val2
+        console.log(paramUrl)
+        getDataLending(paramUrl)
+    }
+
     return (
         <Flex align="center" justifyContent="center" flexDir="column" mt={40}>
-           <Search />
+           <Search searchData={searchDataLending} />
            <Alert status="success" width={1380} variant="left-accent">
             <AlertIcon />
             <Box flex="1">
@@ -64,28 +75,44 @@ const Lending = () => {
                 <Badge variant="solid" mr={2}>3141234123</Badge>
                 </AlertDescription>   
             </Alert>
-           <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
-                <Kpi title="Total Minted Volume" total={totalMinted} symbol="$" />
-                <Kpi title="Total Burned Volume" total={totalBurned} symbol="$" />
-                <Kpi title="Total Unique User Minted" total={totalUserMinted} symbol="" />
-                <Kpi title="Total Unique User Burned" total={totalUserBurned} symbol="" />
-            </Stack>
-            <Box w={1000} h={400} mb={10} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
-                <center>
-                    <Heading as="h4" size="md" m={0} mb={5} mt={5}>
-                         Total Volume Minted and Burned
-                    </Heading>
-                </center>
-                <ChartTwoLine data={mintBurnDateVolume} />
-            </Box>
-            <Box w={1000} h={400} mb={10} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
-                <center>
-                    <Heading as="h4" size="md" m={0} mb={5} mt={5}>
-                         Total Unique User Minted and Burned
-                    </Heading>
-                </center>
-                <ChartTwoLine data={mintBurnDateUser} />
-            </Box>
+            {
+                isLoading ? (
+                    <Spinner
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                        color="teal.500"
+                        size="xl"
+                        m={20}
+                    />
+                ) : (
+                    <>
+                        <Stack m={10} mt={5} direction={["column", "row"]} spacing="24px">
+                            <Kpi title="Total Minted Volume" total={totalMinted} symbol="$" />
+                            <Kpi title="Total Burned Volume" total={totalBurned} symbol="$" />
+                            <Kpi title="Total Unique User Minted" total={totalUserMinted} symbol="" />
+                            <Kpi title="Total Unique User Burned" total={totalUserBurned} symbol="" />
+                        </Stack>
+                        <Box w={1000} h={400} mb={10} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
+                            <center>
+                                <Heading as="h4" size="md" m={0} mb={5} mt={5}>
+                                    Total Volume Minted and Burned
+                                </Heading>
+                            </center>
+                            <ChartTwoLine data={mintBurnDateVolume} />
+                        </Box>
+                        <Box w={1000} h={400} mb={10} flex="1" bg="white" boxShadow="lg" rounded="md" border="1px" borderColor="gray.200" align="center">
+                            <center>
+                                <Heading as="h4" size="md" m={0} mb={5} mt={5}>
+                                    Total Unique User Minted and Burned
+                                </Heading>
+                            </center>
+                            <ChartTwoLine data={mintBurnDateUser} />
+                        </Box>
+                    </>
+                )
+            }
+           
         </Flex>
 
     )
