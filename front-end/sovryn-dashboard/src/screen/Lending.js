@@ -26,21 +26,25 @@ const Lending = () => {
     const [mintBurnDateVolume, setMintBurnDateVolume] = React.useState([])
     const [mintBurnDateUser, setMintBurnDateUser] = React.useState([])
     const [isLoading, setIsLoading] = React.useState(false)
+    const [blockLending, setBlockLending] = React.useState(0)
 
     async function getDataLending(paramFilter=""){
         setIsLoading(true)
         const urlKpiLending = axios.get("https://api-sovryn.akbaridria.com/api/get_kpi_lending" + paramFilter)
         const urlMintBurnVolume = axios.get("https://api-sovryn.akbaridria.com/api/get_mint_burn" + paramFilter)
         const urlMintBurnUser = axios.get("https://api-sovryn.akbaridria.com/api/get_user_mint_burn" + paramFilter)
-        await axios.all([urlKpiLending, urlMintBurnVolume, urlMintBurnUser]).then((...responses) => {
+        const url_block_lending = axios.get("https://api-sovryn.akbaridria.com/api/getblock/lending")
+
+        await axios.all([urlKpiLending, urlMintBurnVolume, urlMintBurnUser, url_block_lending]).then((...responses) => {
             const rawKPI = responses[0][0]
             const rawMintBurnVol = responses[0][1]
             const rawMintBurnUs = responses[0][2]
-            console.log(responses)
-            rawKPI === [] ? setTotalMinted(rawKPI.data[1].total) : setTotalMinted(0)
-            rawKPI === [] ? setTotalBurned(rawKPI.data[0].total) : setTotalBurned(0)
-            rawKPI === [] ? setTotalUserBurned(rawKPI.data[0].user) : setTotalUserBurned(0)
-            rawKPI === [] ? setTotalUserMinted(rawKPI.data[1].user) : setTotalUserMinted(0)
+            const block_lending = responses[0][3]
+            setBlockLending(block_lending.data.block)
+            rawKPI.data.length === 0 ?  setTotalMinted(0) : setTotalMinted(rawKPI.data[1].total)
+            rawKPI.data.length === 0 ?  setTotalBurned(0) : setTotalBurned(rawKPI.data[0].total)
+            rawKPI.data.length === 0 ?  setTotalUserBurned(0) : setTotalUserBurned(rawKPI.data[0].user)
+            rawKPI.data.length === 0 ?  setTotalUserMinted(0) : setTotalUserMinted(rawKPI.data[1].user)
             setMintBurnDateVolume(rawMintBurnVol.data)
             setMintBurnDateUser(rawMintBurnUs.data)
         })
@@ -72,7 +76,7 @@ const Lending = () => {
             </Box>
                 <AlertTitle>Latest Sync Block</AlertTitle>
                 <AlertDescription display="block">
-                <Badge variant="solid" mr={2}>3141234123</Badge>
+                <Badge variant="solid" mr={2}>{blockLending}</Badge>
                 </AlertDescription>   
             </Alert>
             {

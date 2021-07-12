@@ -185,11 +185,11 @@ class database :
         conn = self.mysqlconnect()
         cur = conn.cursor()
         if from_date == 0 and wallet == 0 :
-            query_sql = "SELECT SUM(total) AS total, type, COUNT(DISTINCT(trader)) AS user from lending GROUP BY type"
+            query_sql = "SELECT SUM(total) AS total, type, COUNT(DISTINCT(trader)) AS user from lending WHERE ticker_symbol != 'iBPro' GROUP BY type"
         elif from_date != 0 and wallet == 0 :
-            query_sql = "SELECT SUM(total) AS total, type, COUNT(DISTINCT(trader)) AS user from lending  WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY type"
+            query_sql = "SELECT SUM(total) AS total, type, COUNT(DISTINCT(trader)) AS user from lending  WHERE ticker_symbol != 'iBPro' AND `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY type"
         elif from_date != 0 and wallet != 0 :
-            query_sql = "SELECT SUM(total) AS total, type, COUNT(DISTINCT(trader)) AS user from lending  WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY type"
+            query_sql = "SELECT SUM(total) AS total, type, COUNT(DISTINCT(trader)) AS user from lending  WHERE ticker_symbol != 'iBPro' AND `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY type"
         print(query_sql)
         cur.execute(query_sql)
         _d = cur.fetchall()
@@ -201,9 +201,9 @@ class database :
         if from_date == 0 and wallet == 0 :
             query_sql = "SELECT date, sum( if( type = 'Mint', total, 0 ) ) AS Mint, sum( if( type = 'Burn', total, 0 ) ) AS Burn FROM lending as T1 GROUP BY T1.date"
         elif from_date != 0 and wallet == 0 :
-            query_sql = "SELECT date, sum( if( type = 'Mint', total, 0 ) ) AS Mint, sum( if( type = 'Burn', total, 0 ) ) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY T1.date"
+            query_sql = "SELECT date, sum( if( type = 'Mint', total, 0 ) ) AS Mint, sum( if( type = 'Burn', total, 0 ) ) AS Burn FROM lending as T1 WHERE ticker_symbol != 'iBPro' AND `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY T1.date"
         elif from_date !=0 and wallet != 0 :
-            query_sql = "SELECT date, sum( if( type = 'Mint', total, 0 ) ) AS Mint, sum( if( type = 'Burn', total, 0 ) ) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY T1.date"
+            query_sql = "SELECT date, sum( if( type = 'Mint', total, 0 ) ) AS Mint, sum( if( type = 'Burn', total, 0 ) ) AS Burn FROM lending as T1 WHERE ticker_symbol != 'iBPro' AND `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY T1.date"
         cur.execute(query_sql)
         _r = cur.fetchall()
         return _r
@@ -212,11 +212,11 @@ class database :
         conn = self.mysqlconnect()
         cur = conn.cursor()
         if from_date == 0 and wallet == 0 :
-            query_sql = "SELECT date, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Mint' AND date=T1.date) AS Mint, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Burn' AND date=T1.date) AS Burn FROM lending as T1 GROUP BY T1.date"
+            query_sql = "SELECT date, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Mint' AND date=T1.date) AS Mint, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE ticker_symbol != 'iBPro' AND type='Burn' AND date=T1.date) AS Burn FROM lending as T1 GROUP BY T1.date"
         elif from_date != 0 and wallet == 0 :
-            query_sql = "SELECT date, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Mint' AND date=T1.date) AS Mint, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Burn' AND date=T1.date) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY T1.date"
+            query_sql = "SELECT date, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Mint' AND date=T1.date) AS Mint, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE ticker_symbol != 'iBPro' AND type='Burn' AND date=T1.date) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' GROUP BY T1.date"
         elif from_date !=0 and wallet != 0 :
-            query_sql = "SELECT date, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Mint' AND date=T1.date) AS Mint, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Burn' AND date=T1.date) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY T1.date"
+            query_sql = "SELECT date, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE type='Mint' AND date=T1.date) AS Mint, (SELECT COUNT(DISTINCT(trader)) FROM lending WHERE ticker_symbol != 'iBPro' AND type='Burn' AND date=T1.date) AS Burn FROM lending as T1 WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY T1.date"
         cur.execute(query_sql)
         _r = cur.fetchall()
         return _r
@@ -258,4 +258,12 @@ class database :
             query_sql = "SELECT date, COUNT(DISTINCT(trader)) AS total FROM borrowing WHERE `date` >= '" + str(from_date) + "' AND `date` <= '" + str(to_date) + "' AND `trader` = '" + str(wallet) + "' GROUP BY date"
         cur.execute(query_sql)
         _r = cur.fetchall()
+        return _r
+
+    def getBlock(self, database_name) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        query_sql = "SELECT block FROM " + database_name + " ORDER BY date DESC LIMIT 1"
+        cur.execute(query_sql)
+        _r = cur.fetchone()
         return _r

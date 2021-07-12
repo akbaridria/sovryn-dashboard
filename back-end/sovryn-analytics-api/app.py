@@ -285,6 +285,27 @@ def get_total_user_borrow():
         _largest_swap = _d.get_total_user_borrow()
         return jsonify(_largest_swap)
 
+@app.route('/api/getblock/swap', methods=['GET'])
+@cross_origin()
+def getblockswap():
+    _d = database()
+    _r = _d.getBlock('swap')
+    return _r
+
+@app.route('/api/getblock/lending', methods=['GET'])
+@cross_origin()
+def getblocklending():
+    _d = database()
+    _r = _d.getBlock('lending')
+    return _r
+
+@app.route('/api/getblock/borrowing', methods=['GET'])
+@cross_origin()
+def getblockborrowing():
+    _d = database()
+    _r = _d.getBlock('borrowing')
+    return _r
+
 
 if __name__ == '__main__':
     app.run()

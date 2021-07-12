@@ -39,6 +39,7 @@ const Swap = () => {
     const [dataGasMonth, setDataGasMonth] = React.useState([])
     const [topTraders, setTopTraders] = React.useState([])
     const [isLoading, setIsLoding] = React.useState(false)
+    const [blockSwap, setBlockSwap] = React.useState(0)
 
     React.useEffect(() => {
         get_data_swap();
@@ -125,7 +126,8 @@ const Swap = () => {
         const url_total_gas_date = axios.get("https://api-sovryn.akbaridria.com/api/get_spent_gas_date" + paramFilter)
         const url_total_gas_month = axios.get("https://api-sovryn.akbaridria.com/api/get_spent_gas_month" + paramFilter)
         const url_top_trader = axios.get("https://api-sovryn.akbaridria.com/api/top_trader" + paramFilter)
-        await axios.all([url_kpi, url_distribution, url_total_swap_date, url_total_swap_month, url_total_user_date, url_total_user_month, url_total_gas_date, url_total_gas_month, url_top_trader])
+        const url_block_swap = axios.get("https://api-sovryn.akbaridria.com/api/getblock/swap")
+        await axios.all([url_kpi, url_distribution, url_total_swap_date, url_total_swap_month, url_total_user_date, url_total_user_month, url_total_gas_date, url_total_gas_month, url_top_trader, url_block_swap])
         .then((...responses) => {
             console.log("oke gan mantap jiwa")
             const data_kpi = responses[0][0]
@@ -137,6 +139,8 @@ const Swap = () => {
             const rawDataGasDate = responses[0][6]
             const rawDataGasMonth = responses[0][7]
             const topTrader = responses[0][8]
+            const block_swap = responses[0][9]
+            setBlockSwap(block_swap.data.block)
             setTopTraders(topTrader.data)
             setDataGasMonth(changeForRechart(rawDataGasMonth))
             setDataGasDate(changeForRechartGasDate(rawDataGasDate))
@@ -175,7 +179,7 @@ const Swap = () => {
             </Box>
                 <AlertTitle>Latest Sync Block</AlertTitle>
                 <AlertDescription display="block">
-                <Badge variant="solid" mr={2}>3141234123</Badge>
+                <Badge variant="solid" mr={2}>{blockSwap}</Badge>
                 </AlertDescription>   
             </Alert>
             

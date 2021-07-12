@@ -24,6 +24,7 @@ const Borrowing = () => {
     const [ borrowVolumeDate, setBorrowVolumeDate] = React.useState([])
     const [ borrowUserDate, setBorrowUserDate ] = React.useState([])
     const [ isLoading, setIsloading] = React.useState(false)
+    const [ blockBorrowing, setBlockBorrowing] = React.useState(0)
     React.useEffect(()  => {
         getDataBorrow();
     }, [])
@@ -39,12 +40,15 @@ const Borrowing = () => {
         const urlKpiBorrow = axios.get("https://api-sovryn.akbaridria.com/api/get_kpi_borrowing" + paramFilter)
         const urlBorrowVolume = axios.get("https://api-sovryn.akbaridria.com/api/get_total_borrow_date" + paramFilter)
         const urlBorrowUser = axios.get("https://api-sovryn.akbaridria.com/api/get_total_user_borrow" + paramFilter)
+        const url_block_borrowing = axios.get("https://api-sovryn.akbaridria.com/api/getblock/borrowing")
 
-        axios.all([urlKpiBorrow, urlBorrowVolume, urlBorrowUser]).then((...responses) => {
+        axios.all([urlKpiBorrow, urlBorrowVolume, urlBorrowUser, url_block_borrowing]).then((...responses) => {
             console.log(responses)
             const rawKpiBorrow = responses[0][0]
             const rawBorrowVolume = responses[0][1]
             const rawBorrowUser = responses[0][2]
+            const block_borrowing = responses[0][3]
+            setBlockBorrowing(block_borrowing.data.block)
             setBorrowVolumeDate(rawBorrowVolume.data)
             setBorrowUserDate(rawBorrowUser.data)
             rawKpiBorrow.data.borrow ? setBorrowVolume(rawKpiBorrow.data.borrow) : setBorrowVolume(0)
@@ -66,7 +70,7 @@ const Borrowing = () => {
             </Box>
                 <AlertTitle>Latest Sync Block</AlertTitle>
                 <AlertDescription display="block">
-                <Badge variant="solid" mr={2}>3141234123</Badge>
+                <Badge variant="solid" mr={2}>{blockBorrowing}</Badge>
                 </AlertDescription>   
             </Alert>
             

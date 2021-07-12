@@ -64,3 +64,37 @@ class database :
         else :
             conn.close()
             return 1
+    
+    def getBlock(self, database_name) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        query_sql = "SELECT block FROM " + database_name + " ORDER BY date DESC LIMIT 1"
+        cur.execute(query_sql)
+        _r = cur.fetchone()
+        return _r
+    
+    def getBlockLend(self, database_name, typed) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        query_sql = "SELECT block FROM " + database_name + " WHERE type='" + typed + "' ORDER BY date DESC LIMIT 1"
+        cur.execute(query_sql)
+        _r = cur.fetchone()
+        return _r
+    
+    def getDate(self, database_name) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        query_sql = "SELECT date FROM " + database_name + " ORDER BY date DESC LIMIT 1"
+        cur.execute(query_sql)
+        _r = cur.fetchone()
+        return _r
+    
+    def getDateLend(self, database_name, typed) :
+        conn = self.mysqlconnect()
+        cur = conn.cursor()
+        query_sql = "SELECT date FROM " + database_name + " WHERE type='" + typed + "' ORDER BY date DESC LIMIT 1"
+        cur.execute(query_sql)
+        _r = cur.fetchone()
+        return _r
+
+    
